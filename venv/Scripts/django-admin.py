@@ -1,4 +1,4 @@
-#!C:\Users\Asus\PycharmProjects\django-jewelry-shop-main\venv\Scripts\python.exe
+#!C:\Users\uito_shulginms\PycharmProjects\Toha_proj\venv\Scripts\python.exe
 # When the django-admin.py deprecation ends, remove this script.
 import warnings
 

@@ -115,6 +115,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'jewelryshop/static')]
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static') # Automatically Created on Production
 
 # Settings for Media
