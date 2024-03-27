@@ -5,9 +5,9 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Address(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.CASCADE)
-    locality = models.CharField(max_length=150, verbose_name="Ближайшее местоположение")
-    city = models.CharField(max_length=150, verbose_name="Город")
-    state = models.CharField(max_length=150, verbose_name="Улица")
+    locality = models.CharField(max_length=150, verbose_name="Город")
+    city = models.CharField(max_length=150, verbose_name="Улица")
+    state = models.CharField(max_length=150, verbose_name="Дом")
 
     class Meta:
         verbose_name_plural = 'Адреса'
@@ -76,12 +76,12 @@ class Cart(models.Model):
 
 
 STATUS_CHOICES = (
-    ('Pending', 'Pending'),
-    ('Accepted', 'Accepted'),
-    ('Packed', 'Packed'),
-    ('On The Way', 'On The Way'),
-    ('Delivered', 'Delivered'),
-    ('Cancelled', 'Cancelled')
+    ('Обрабатывается', 'Обрабатывается'),
+    ('Принял', 'Принял'),
+    ('Упакован', 'Упакован'),
+    ('В пути', 'В пути'),
+    ('Доставлен', 'Доставлен'),
+    ('Отменен', 'Отменен')
 )
 
 
@@ -94,7 +94,7 @@ class Order(models.Model):
     status = models.CharField(
         choices=STATUS_CHOICES,
         max_length=50,
-        default="Pending",
+        default="Обрабатывается",
         verbose_name="Статус"
     )
 

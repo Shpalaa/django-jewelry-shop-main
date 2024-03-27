@@ -2,7 +2,29 @@
 {% load static %}
 
     {% block content %}
-    
+
+        <script>
+            // Получаем текущий параметр сортировки из URL
+            var urlParams = new URLSearchParams(window.location.search);
+            var sortingParam = urlParams.get('sorting');
+
+            // Получаем элемент select
+            var selectElement = document.querySelector('select[name="sorting"]');
+
+            // Устанавливаем выбранный вариант в соответствии с параметром сортировки в URL
+            if (sortingParam) {
+                selectElement.value = sortingParam;
+            }
+
+            // Обработчик изменения выбора в элементе select
+            selectElement.addEventListener('change', function() {
+                // Получаем выбранное значение
+                var selectedValue = selectElement.value;
+                // Обновляем URL с новым параметром сортировки
+                window.location.href = window.location.pathname + '?sorting=' + selectedValue;
+            });
+        </script>
+
       <div class="container">
         <!-- HERO SECTION-->
         <section class="py-5 bg-light">
@@ -42,12 +64,41 @@
 
                 <h6 class="text-uppercase mb-4">Ценовой Диапазон</h6>
                 <div class="price-range pt-4 mb-5">
-                  <div id="range"></div>
                   <div class="row pt-2">
-                    <div class="col-6"><strong class="small font-weight-bold text-uppercase">От</strong></div>
-                    <div class="col-6 text-right"><strong class="small font-weight-bold text-uppercase">До</strong></div>
+                    <div class="col-6">
+                      <strong class="small font-weight-bold text-uppercase">От</strong>
+                      <input type="text" id="min-price" name="min-price" class="form-control">
+                    </div>
+                    <div class="col-6 text-right">
+                      <strong class="small font-weight-bold text-uppercase">До</strong>
+                      <input type="text" id="max-price" name="max-price" class="form-control">
+                    </div>
                   </div>
                 </div>
+
+                <!-- Скрипт для сохранения и применения выбранного ценового диапазона -->
+                <script>
+                  // Получаем элементы для ввода минимальной и максимальной цены
+                  var minPriceInput = document.getElementById('min-price');
+                  var maxPriceInput = document.getElementById('max-price');
+
+                  // Обработчик изменения ввода цены
+                  minPriceInput.addEventListener('input', updatePriceRange);
+                  maxPriceInput.addEventListener('input', updatePriceRange);
+
+                  function updatePriceRange() {
+                    // Получаем введенные значения
+                    var minPrice = minPriceInput.value;
+                    var maxPrice = maxPriceInput.value;
+
+                    // Обновляем URL с новыми параметрами ценового диапазона
+                    var urlParams = new URLSearchParams(window.location.search);
+                    urlParams.set('min_price', minPrice);
+                    urlParams.set('max_price', maxPrice);
+                    window.location.search = urlParams.toString();
+                  }
+                </script>
+
 <!--                <h6 class="text-uppercase mb-3">Показать только</h6>-->
                 <div class="custom-control custom-checkbox mb-1">
 <!--                  <input class="custom-control-input" id="customCheck1" type="checkbox">-->
@@ -102,11 +153,11 @@
                       <li class="list-inline-item text-muted mr-3"><a class="reset-anchor p-0" href="#"><i class="fas fa-th-large"></i></a></li>
                       <li class="list-inline-item text-muted mr-3"><a class="reset-anchor p-0" href="#"><i class="fas fa-th"></i></a></li>
                       <li class="list-inline-item">
-                        <select class="selectpicker ml-auto" name="sorting" data-width="200" data-style="bs-select-form-control" data-title="Без сортировки">
-                          <option value="default">Без сортировки</option>
-                          <option value="popularity">Популярные</option>
-                          <option value="low-high">Цена: С наименьшей</option>
-                          <option value="high-low">Цена: С наибольшей</option>
+                        <select class="selectpicker ml-auto" name="sorting" data-width="200" data-style="bs-select-form-control" data-title="Без сортировки" onchange="this.options[this.selectedIndex].value && (window.location = '{% url 'store:category-products' category.slug %}?sorting=' + this.options[this.selectedIndex].value);">
+                            <option value="default">Без сортировки</option>
+                            <option value="popularity">Популярные</option>
+                            <option value="low-high">Цена: С наименьшей</option>
+                            <option value="high-low">Цена: С наибольшей</option>
                         </select>
                       </li>
                     </ul>
@@ -117,7 +168,7 @@
 
                   {% if products %}
                     {% for product in products %}
-                    
+
                       <!-- PRODUCT-->
                       <div class="col-lg-4 col-sm-6">
                         <div class="product text-center">
@@ -173,4 +224,5 @@
           </div>
         </section>
       </div>
+
       {% endblock content %}

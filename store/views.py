@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from .forms import RegistrationForm, AddressForm
 from django.contrib import messages
 from django.views import View
+from django.db.models import F
 import decimal
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator  # for Class Based Views
@@ -38,15 +39,37 @@ def all_categories(request):
     return render(request, 'store/categories.html', {'categories': categories})
 
 
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Q
+from .models import Category, Product
+
 def category_products(request, slug):
     category = get_object_or_404(Category, slug=slug)
+    sorting = request.GET.get('sorting')
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+
+    # Получаем продукты данной категории
     products = Product.objects.filter(is_active=True, category=category)
+
+    # Применяем сортировку, если она указана
+    if sorting == 'low-high':
+        products = products.order_by('price')
+    elif sorting == 'high-low':
+        products = products.order_by('-price')
+
+    # Применяем фильтрацию по ценовому диапазону, если параметры заданы
+    if min_price and max_price:
+        products = products.filter(price__range=(min_price, max_price))
+
     categories = Category.objects.filter(is_active=True)
+
     context = {
         'category': category,
         'products': products,
         'categories': categories,
     }
+
     return render(request, 'store/category_products.html', context)
 
 
